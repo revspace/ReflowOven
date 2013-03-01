@@ -3,7 +3,7 @@
 
 #include "tc.h"
 
-#define TC_SCALE	0.4667
+#define TC_SCALE	0.42
 #define REF_SCALE	0.4832
 #define REF_OFFSET	175.
 
