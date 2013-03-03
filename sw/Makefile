@@ -14,15 +14,18 @@ reflow.hex : reflow.elf
 	size $^
 	avr-objcopy -j .text -j .data -O ihex $^ $@
 
-reflow.elf : reflow.o serial.o tc.o
+reflow.elf : reflow.o serial.o tc.o pid.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 
-reflow.o : reflow.c serial.h tc.h
+reflow.o : reflow.c serial.h tc.h pid.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 serial.o : serial.c serial.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 	
 tc.o : tc.c tc.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+pid.o : pid.c pid.h
 	$(CC) $(CFLAGS) -c -o $@ $<

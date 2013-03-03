@@ -1,6 +1,8 @@
 #ifndef _TC_H
 #define _TC_H
 
+#include <stdint.h>
+
 #define TEMPFACTOR		(4.)
 #define TEMP2INT(T)		((T)>>2)
 #define TEMP2FRAC(T)	((T)&0x03)
