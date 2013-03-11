@@ -15,8 +15,8 @@
 #define HEATER_DDR      DDRD
 
 // controller constants
-#define SETPOINT_PREHEAT    NUM2TEMP(120.0)
-#define SETPOINT_REFLOW     NUM2TEMP(240.0)
+#define SETPOINT_PREHEAT    120.0
+#define SETPOINT_REFLOW     240.0
 
 #define PFACTOR         1.0
 #define IFACTOR         1.0
@@ -38,7 +38,7 @@ const char frac_str[4][3] = { "00", "25", "50", "75" };     // fractional values
 // main program state
 volatile struct _reflow_state {
     enum { RS_OFF = 0, RS_PREHEAT = 1, RS_REFLOW = 2, RS_COOLDOWN = 3 } stage;    // explicit numbering to make debug code shorter
-    uint16_t setpoint;
+    float setpoint;
     uint16_t time;
 
     int16_t window;
@@ -65,7 +65,7 @@ inline void status_update() {
 // control temperature
 inline void control_temperature() {
     // find the on-time for the current second using PID
-    reflow_state.window = pid_step(tc_data.tc_temp, 0, UT_INTERVAL/CT_INTERVAL);
+    reflow_state.window = pid_step(UT_INTERVAL/1000.0, tc_data.tc_temp, 0, UT_INTERVAL/CT_INTERVAL);
 
     if(reflow_state.window > 0) {
         HEATER_PORT |= _BV(HEATER_PIN); // turn on heater
@@ -102,13 +102,14 @@ int main() {
     HEATER_PORT &= ~_BV(HEATER_PIN);    // turn off heater
 
     tc_init();
-    pid_init(PFACTOR, IFACTOR, DFACTOR);
+    pid_init(PFACTOR, IFACTOR, DFACTOR, 0, 10.0);
 
 
     // set up program state
     serial_xmit(" state");
     reflow_state.stage = RS_OFF;
     reflow_state.setpoint = SETPOINT_REFLOW;
+    pid_change_setpoint(SETPOINT_REFLOW);
     reflow_state.time = 0;
 
 

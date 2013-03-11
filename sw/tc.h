@@ -3,15 +3,12 @@
 
 #include <stdint.h>
 
-#define TEMPFACTOR		(4.)
-#define TEMP2INT(T)		((T)>>2)
-#define TEMP2FRAC(T)	((T)&0x03)
-
-#define NUM2TEMP(N)		(uint16_t)((N)*TEMPFACTOR)
+#define TEMP2INT(T)  ((uint16_t)T)
+#define TEMP2FRAC(T) (((uint16_t)(T*4))%4)
 
 extern struct _tc_data {
-	uint16_t tc_temp;
-	uint16_t ref_temp;
+	float tc_temp;
+	float ref_temp;
 } tc_data;
 
 void tc_init();

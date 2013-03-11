@@ -24,12 +24,12 @@ void tc_read() {
 	while(ADCSRA & 0b01000000);		// wait for conversion
 	v  =  ADCL;						// store ADC value -- read ADCL first
 	v |= (ADCH << 8);				// read in ADCH
-	tc_data.ref_temp = (uint16_t)((v*REF_SCALE - REF_OFFSET)*TEMPFACTOR);
+	tc_data.ref_temp = v*REF_SCALE - REF_OFFSET;
 
 	ADMUX	= 0b01000000;			// ref from AVCC, input from adc0
 	ADCSRA	= 0b11000111;			// start conversion
 	while(ADCSRA & 0b01000000);		// wait for conversion
 	v  =  ADCL;						// store ADC value -- read ADCL first
 	v |= (ADCH << 8);				// read in ADCH
-	tc_data.tc_temp = ((uint16_t)(v*TC_SCALE*TEMPFACTOR)) + tc_data.ref_temp;
+	tc_data.tc_temp = v*TC_SCALE + tc_data.ref_temp;
 }
