@@ -1,4 +1,5 @@
 #include "tc.h"
+#include "serial.h"
 #include "pid.h"
 
 static float Kp, Ki, Kd;
@@ -26,7 +27,7 @@ int16_t pid_step(float delta, float input, int16_t o_min, int16_t o_max) {
     float kd = Kd / delta;
 
     // compute error, derivative of error
-    float error = input - setpoint;
+    float error = setpoint - input;
     float delta_error = error - last_error;
 
     // accumulate and clip integral term
@@ -36,6 +37,12 @@ int16_t pid_step(float delta, float input, int16_t o_min, int16_t o_max) {
 
     // compute output
     float output = Kp * error + acc_error - kd * delta_error;
+
+    serial_xmit("\nerror: "); serial_xmit_num((int16_t)(error));
+    serial_xmit("\nlast: "); serial_xmit_num((int16_t)(last_error));
+    serial_xmit("\nacc: "); serial_xmit_num((int16_t)(acc_error));
+    serial_xmit("\nout: "); serial_xmit_num((int16_t)(output));
+    serial_xmit("\n");
 
     last_error = error; // store last error for differential term
 

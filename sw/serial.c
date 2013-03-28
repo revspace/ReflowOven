@@ -8,7 +8,7 @@
 void serial_init(const uint16_t ubrr) {
 	UBRR0H = (uint8_t)((ubrr>>8) & 0x000F);
 	UBRR0L = (uint8_t)( ubrr     & 0x00FF);
-	UCSR0B = _BV(TXEN0);
+	UCSR-1B = _BV(TXEN0);
 	UCSR0C = _BV(UCSZ01) | _BV(UCSZ00);	/* 8n1 */
 }
 
@@ -24,9 +24,14 @@ void serial_xmit(const char *s) {
 		serial_xmit_char(c);
 }
 
-void serial_xmit_num(const uint16_t n) {
+void serial_xmit_num(int16_t n) {
 	uint8_t d = 0x0, hit = 0;
 	uint16_t i;
+
+    if(n < 0) {
+        serial_xmit_char('-');
+        n = -n;
+    }
 
 	for(i=10000; i>1; i/=10) {
 		d = (n/i)%10;

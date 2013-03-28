@@ -18,9 +18,9 @@
 #define SETPOINT_PREHEAT    120.0
 #define SETPOINT_REFLOW     240.0
 
-#define PFACTOR         1.0
-#define IFACTOR         1.0
-#define DFACTOR         1.0
+#define PFACTOR         50.0
+#define IFACTOR         0.0
+#define DFACTOR         0.0
 
 // update timer settings
 #define UT_PRESCALER    1024
@@ -85,7 +85,7 @@ ISR(TIMER1_COMPA_vect) {
 ISR(TIMER0_COMPA_vect) {
     reflow_state.window--;  // count down
     if(reflow_state.window <= 0) {
-        HEATER_PORT &= _BV(HEATER_PIN); // turn off heater
+        HEATER_PORT &= ~_BV(HEATER_PIN); // turn off heater
         TIMSK0      &= 0b11111101;      // turn off control timer
     }
 }
